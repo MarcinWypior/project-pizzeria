@@ -129,58 +129,45 @@ const select = {
       });
 
     }
+
+    
     processOrder() {
       const thisProduct = this;
-    
+
       // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
-      console.log('ALL DATA FROM FORM');
-      console.log('formData', formData);
-      console.log('ALL DATA FROM FORM ENDS !!!');
+
       // set price to default price
       let price = thisProduct.data.price;
- 
+
       // for every category (param)...
-      for(let paramId in thisProduct.data.params) {
+      for (let paramId in thisProduct.data.params) {
         // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
         const param = thisProduct.data.params[paramId];
         // console.log('paramId, param');
         // console.log(paramId, param);
 
         // for every option in this category
-        for(let optionId in param.options) {
+        for (let optionId in param.options) {
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
-          const option = param.options[optionId]; //returns data from pattern
-          
-          const selectedOptions = formData[paramId];
 
-          console.log('selectedOptions !!! ', selectedOptions , 'option,' , option);
+          const option = param.options[optionId];
+          const isOptionSelected = formData[paramId] && formData[paramId].includes(optionId);
+          const isDefault = param.options[optionId].default;
 
-          
-          if(selectedOptions.includes(option['label'].toLowerCase())){
-            console.log('działam');
-            if(option['default'] == undefined){
-              price=price + option['price'];
-              console.log('CENA WZROSŁA');
-            }
+          if(isOptionSelected && !isDefault) {
+            price += option.price;
           }
 
-          console.log('test ifa odejmującego',option['default'] == true, !(selectedOptions.includes(option['label'].toLowerCase())));
-
-          if((option['default'] == true) && !(selectedOptions.includes(option['label'].toLowerCase()))){
-            
-            console.log(price, " ", option['price'])
-            price=price - option['price'];
-            
-            console.log('cena spada !!!')
+          if(!isOptionSelected && isDefault) {
+            price -= option.price;
           }
 
         }
       }
-    
+
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
-      console.log('final price');
       console.log(price);
     }
 
