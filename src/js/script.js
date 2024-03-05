@@ -134,8 +134,9 @@ const select = {
     
       // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
-      // console.log('formData', formData);
-      
+      console.log('ALL DATA FROM FORM');
+      console.log('formData', formData);
+      console.log('ALL DATA FROM FORM ENDS !!!');
       // set price to default price
       let price = thisProduct.data.price;
  
@@ -143,35 +144,35 @@ const select = {
       for(let paramId in thisProduct.data.params) {
         // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
         const param = thisProduct.data.params[paramId];
-        console.log('paramId, param');
-        console.log(paramId, param);
+        // console.log('paramId, param');
+        // console.log(paramId, param);
 
         // for every option in this category
         for(let optionId in param.options) {
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId]; //returns data from pattern
-          console.log('optionId, option');
-          console.log(optionId, option);
-
-
-          const selectedOption = formData[paramId][0];
-          console.log('[selectedOption]');// cappucino
-          console.log(selectedOption);// cappucino
           
+          const selectedOptions = formData[paramId];
 
-          if(option['label'].toLowerCase() == selectedOption){
-            console.log('selected option matches: ');
+          console.log('selectedOptions !!! ', selectedOptions , 'option,' , option);
+
+          
+          if(selectedOptions.includes(option['label'].toLowerCase())){
+            console.log('działam');
             if(option['default'] == undefined){
               price=price + option['price'];
-              console.log('price increased !!!')
-              
-              console.log('selected option is not default: ',selectedOption);
+              console.log('CENA WZROSŁA');
             }
           }
 
-          if((option['default'] == true) && (option['label'].toLowerCase() != selectedOption)){
+          console.log('test ifa odejmującego',option['default'] == true, !(selectedOptions.includes(option['label'].toLowerCase())));
+
+          if((option['default'] == true) && !(selectedOptions.includes(option['label'].toLowerCase()))){
+            
+            console.log(price, " ", option['price'])
             price=price - option['price'];
-            console.log('price reduced !!!')
+            
+            console.log('cena spada !!!')
           }
 
         }
